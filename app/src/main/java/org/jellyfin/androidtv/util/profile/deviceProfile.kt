@@ -420,7 +420,8 @@ fun createDeviceProfile(
 	val allowedAudioCodecs = if (downMixAudio) downmixSupportedAudioCodecs else {
 		createSupportedAudioCodecs(
 		isAC3Enabled,
-		// EAC3: disabled when toggled off by legacy flag OR policy says ALWAYS_TRANSCODE
+		// EAC3 is controlled by isEAC3Enabled (an "enabled" flag) rather than an is_disable_*
+		// flag like the other codecs. Honour the ALWAYS_TRANSCODE policy on top of that toggle.
 		isEAC3Enabled && eac3_codec_policy != AudioCodecPolicy.ALWAYS_TRANSCODE,
 		PreferredAudioTranscodeCodec,
 		// Each codec is removed from the allowed list when:
