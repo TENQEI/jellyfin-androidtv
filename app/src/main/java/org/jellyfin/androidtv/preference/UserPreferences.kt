@@ -5,6 +5,7 @@ import androidx.preference.PreferenceManager
 import org.jellyfin.androidtv.preference.UserPreferences.Companion.screensaverInAppEnabled
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
+import org.jellyfin.androidtv.preference.constant.AudioCodecPolicy
 import org.jellyfin.androidtv.preference.constant.PreferredAudioCodecs
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
@@ -198,6 +199,44 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Disable VORBIS
 		 */
 		var disable_vorbis = booleanPreference("disable_vorbis", false)
+
+		/* Playback - Audio codec policies (per-codec multichannel transcode control) */
+
+		/**
+		 * Policy for AAC audio codec. TRANSCODE_IF_MULTICHANNEL will allow stereo AAC to
+		 * direct play while multichannel AAC (e.g. 5.1) is transcoded by the server.
+		 */
+		var aac_codec_policy = enumPreference("aac_codec_policy", AudioCodecPolicy.AUTO)
+
+		/**
+		 * Policy for TrueHD (Dolby TrueHD) audio codec.
+		 */
+		var truehd_codec_policy = enumPreference("truehd_codec_policy", AudioCodecPolicy.AUTO)
+
+		/**
+		 * Policy for DTS audio codec.
+		 */
+		var dts_codec_policy = enumPreference("dts_codec_policy", AudioCodecPolicy.AUTO)
+
+		/**
+		 * Policy for DCA (DTS-HD) audio codec.
+		 */
+		var dca_codec_policy = enumPreference("dca_codec_policy", AudioCodecPolicy.AUTO)
+
+		/**
+		 * Policy for EAC3 (Dolby Digital Plus) audio codec.
+		 */
+		var eac3_codec_policy = enumPreference("eac3_codec_policy", AudioCodecPolicy.AUTO)
+
+		/**
+		 * Policy for FLAC audio codec.
+		 */
+		var flac_codec_policy = enumPreference("flac_codec_policy", AudioCodecPolicy.AUTO)
+
+		/**
+		 * Policy for OPUS audio codec.
+		 */
+		var opus_codec_policy = enumPreference("opus_codec_policy", AudioCodecPolicy.AUTO)
 
 		/* Live TV */
 		/**

@@ -257,6 +257,24 @@
     <string name="desc_disable_truehd">Disable TRUEHD (force transcode of)</string>
 	<string name="lbl_disable_vorbis">Disable VORBIS (force transcode of)</string>
     <string name="desc_disable_vorbis">Disable VORBIS (force transcode of)</string>
+
+    <!-- AudioCodecPolicy enum labels -->
+    <string name="audio_codec_policy_auto">Auto (default behavior)</string>
+    <string name="audio_codec_policy_always_allow">Always allow (direct play)</string>
+    <string name="audio_codec_policy_always_transcode">Always transcode</string>
+    <string name="audio_codec_policy_transcode_if_multichannel">Transcode if multichannel (stereo direct play)</string>
+
+    <!-- Per-codec multichannel transcode section heading -->
+    <string name="pref_audio_codec_multichannel_policy">Multichannel Transcode Policy</string>
+
+    <!-- Per-codec multichannel transcode labels -->
+    <string name="lbl_aac_codec_policy">AAC codec policy</string>
+    <string name="lbl_truehd_codec_policy">TrueHD (Dolby TrueHD) codec policy</string>
+    <string name="lbl_dts_codec_policy">DTS codec policy</string>
+    <string name="lbl_dca_codec_policy">DCA (DTS-HD) codec policy</string>
+    <string name="lbl_eac3_codec_policy">EAC3 (Dolby Digital Plus) codec policy</string>
+    <string name="lbl_flac_codec_policy">FLAC codec policy</string>
+    <string name="lbl_opus_codec_policy">OPUS codec policy</string>
     <string name="desc_audio_night_mode">Levels out audio volume automatically</string>
     <string name="lbl_zoom">Zoom</string>
     <string name="lbl_auto_crop">Auto crop</string>

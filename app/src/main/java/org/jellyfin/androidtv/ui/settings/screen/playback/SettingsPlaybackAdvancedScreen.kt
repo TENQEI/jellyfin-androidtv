@@ -423,6 +423,78 @@ fun SettingsPlaybackAdvancedScreen() {
 			)
 		}
 
+		item { ListSection(headingContent = { Text(stringResource(R.string.pref_audio_codec_multichannel_policy)) }) }
+
+		item {
+			var aacCodecPolicy by rememberPreference(userPreferences, UserPreferences.aac_codec_policy)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.lbl_aac_codec_policy)) },
+				captionContent = { Text(stringResource(aacCodecPolicy.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_AAC_CODEC_POLICY) }
+			)
+		}
+
+		item {
+			var truehdCodecPolicy by rememberPreference(userPreferences, UserPreferences.truehd_codec_policy)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.lbl_truehd_codec_policy)) },
+				captionContent = { Text(stringResource(truehdCodecPolicy.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_TRUEHD_CODEC_POLICY) }
+			)
+		}
+
+		item {
+			var dtsCodecPolicy by rememberPreference(userPreferences, UserPreferences.dts_codec_policy)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.lbl_dts_codec_policy)) },
+				captionContent = { Text(stringResource(dtsCodecPolicy.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_DTS_CODEC_POLICY) }
+			)
+		}
+
+		item {
+			var dcaCodecPolicy by rememberPreference(userPreferences, UserPreferences.dca_codec_policy)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.lbl_dca_codec_policy)) },
+				captionContent = { Text(stringResource(dcaCodecPolicy.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_DCA_CODEC_POLICY) }
+			)
+		}
+
+		item {
+			var eac3CodecPolicy by rememberPreference(userPreferences, UserPreferences.eac3_codec_policy)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.lbl_eac3_codec_policy)) },
+				captionContent = { Text(stringResource(eac3CodecPolicy.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_EAC3_CODEC_POLICY) }
+			)
+		}
+
+		item {
+			var flacCodecPolicy by rememberPreference(userPreferences, UserPreferences.flac_codec_policy)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.lbl_flac_codec_policy)) },
+				captionContent = { Text(stringResource(flacCodecPolicy.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_FLAC_CODEC_POLICY) }
+			)
+		}
+
+		item {
+			var opusCodecPolicy by rememberPreference(userPreferences, UserPreferences.opus_codec_policy)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.lbl_opus_codec_policy)) },
+				captionContent = { Text(stringResource(opusCodecPolicy.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_OPUS_CODEC_POLICY) }
+			)
+		}
+
 		item { ListSection(headingContent = { Text(stringResource(R.string.pref_troubleshooting)) }) }
 
 		item {

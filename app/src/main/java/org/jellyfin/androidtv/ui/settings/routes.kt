@@ -32,6 +32,7 @@ import org.jellyfin.androidtv.ui.settings.screen.livetv.SettingsLiveTvGuideFilte
 import org.jellyfin.androidtv.ui.settings.screen.livetv.SettingsLiveTvGuideOptionsScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackAdvancedScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackAudioBehaviorScreen
+import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackAudioCodecPolicyScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackPreferredAudioCodecScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackInactivityPromptScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackMaxBitrateScreen
@@ -50,6 +51,8 @@ import org.jellyfin.androidtv.ui.settings.screen.screensaver.SettingsScreensaver
 import org.jellyfin.androidtv.ui.settings.screen.screensaver.SettingsScreensaverTimeoutScreen
 import org.jellyfin.sdk.model.api.MediaSegmentType
 import org.jellyfin.sdk.model.serializer.toUUIDOrNull
+import org.jellyfin.androidtv.R
+import org.jellyfin.androidtv.preference.UserPreferences
 
 object Routes {
 	const val MAIN = "/"
@@ -95,6 +98,13 @@ object Routes {
 	const val PLAYBACK_ZOOM_MODE = "/playback/zoom-mode"
 	const val PLAYBACK_AUDIO_BEHAVIOR = "/playback/audio-behavior"
 	const val PLAYBACK_PREFERRED_AUDIO_CODEC = "/playback/preferred-audio-codec"
+	const val PLAYBACK_AAC_CODEC_POLICY = "/playback/codec-policy/aac"
+	const val PLAYBACK_TRUEHD_CODEC_POLICY = "/playback/codec-policy/truehd"
+	const val PLAYBACK_DTS_CODEC_POLICY = "/playback/codec-policy/dts"
+	const val PLAYBACK_DCA_CODEC_POLICY = "/playback/codec-policy/dca"
+	const val PLAYBACK_EAC3_CODEC_POLICY = "/playback/codec-policy/eac3"
+	const val PLAYBACK_FLAC_CODEC_POLICY = "/playback/codec-policy/flac"
+	const val PLAYBACK_OPUS_CODEC_POLICY = "/playback/codec-policy/opus"
 	const val TELEMETRY = "/telemetry"
 	const val DEVELOPER = "/developer"
 	const val ABOUT = "/about"
@@ -244,6 +254,48 @@ val routes = mapOf<String, RouteComposable>(
 	},
 	Routes.PLAYBACK_PREFERRED_AUDIO_CODEC to {
 		SettingsPlaybackPreferredAudioCodecScreen()
+	},
+	Routes.PLAYBACK_AAC_CODEC_POLICY to {
+		SettingsPlaybackAudioCodecPolicyScreen(
+			titleRes = R.string.lbl_aac_codec_policy,
+			preference = UserPreferences.aac_codec_policy,
+		)
+	},
+	Routes.PLAYBACK_TRUEHD_CODEC_POLICY to {
+		SettingsPlaybackAudioCodecPolicyScreen(
+			titleRes = R.string.lbl_truehd_codec_policy,
+			preference = UserPreferences.truehd_codec_policy,
+		)
+	},
+	Routes.PLAYBACK_DTS_CODEC_POLICY to {
+		SettingsPlaybackAudioCodecPolicyScreen(
+			titleRes = R.string.lbl_dts_codec_policy,
+			preference = UserPreferences.dts_codec_policy,
+		)
+	},
+	Routes.PLAYBACK_DCA_CODEC_POLICY to {
+		SettingsPlaybackAudioCodecPolicyScreen(
+			titleRes = R.string.lbl_dca_codec_policy,
+			preference = UserPreferences.dca_codec_policy,
+		)
+	},
+	Routes.PLAYBACK_EAC3_CODEC_POLICY to {
+		SettingsPlaybackAudioCodecPolicyScreen(
+			titleRes = R.string.lbl_eac3_codec_policy,
+			preference = UserPreferences.eac3_codec_policy,
+		)
+	},
+	Routes.PLAYBACK_FLAC_CODEC_POLICY to {
+		SettingsPlaybackAudioCodecPolicyScreen(
+			titleRes = R.string.lbl_flac_codec_policy,
+			preference = UserPreferences.flac_codec_policy,
+		)
+	},
+	Routes.PLAYBACK_OPUS_CODEC_POLICY to {
+		SettingsPlaybackAudioCodecPolicyScreen(
+			titleRes = R.string.lbl_opus_codec_policy,
+			preference = UserPreferences.opus_codec_policy,
+		)
 	},
 	Routes.TELEMETRY to {
 		SettingsTelemetryScreen()
