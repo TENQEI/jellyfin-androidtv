@@ -31,7 +31,11 @@ class ExoPlayerAudioPipeline {
 			return
 		}
 
+		// LoudnessEnhancer can only boost audio, not attenuate it.
+		// Only enable it when the normalization gain is positive; for negative or zero
+		// gain the audio is already at or above the target loudness so leave it unchanged.
 		val targetGain = normalizationGain
+			?.takeIf { it > 0f }
 			// Convert to millibels
 			?.times(100f)
 			// Round to integer
