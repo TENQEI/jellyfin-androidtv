@@ -5,6 +5,7 @@ import androidx.media3.common.MimeTypes
 import org.jellyfin.androidtv.constant.Codec
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
+import org.jellyfin.androidtv.preference.constant.AudioCodecPolicy
 import org.jellyfin.androidtv.preference.constant.PreferredAudioCodecs
 import org.jellyfin.sdk.model.ServerVersion
 import org.jellyfin.sdk.model.api.CodecType
@@ -102,6 +103,13 @@ fun createDeviceProfile(
 	is_disable_pcm_s24le = userPreferences[UserPreferences.disable_pcm_s24le],
 	is_disable_truehd = userPreferences[UserPreferences.disable_truehd],
 	is_disable_vorbis = userPreferences[UserPreferences.disable_vorbis],
+	aac_codec_policy = userPreferences[UserPreferences.aac_codec_policy],
+	truehd_codec_policy = userPreferences[UserPreferences.truehd_codec_policy],
+	dts_codec_policy = userPreferences[UserPreferences.dts_codec_policy],
+	dca_codec_policy = userPreferences[UserPreferences.dca_codec_policy],
+	eac3_codec_policy = userPreferences[UserPreferences.eac3_codec_policy],
+	flac_codec_policy = userPreferences[UserPreferences.flac_codec_policy],
+	opus_codec_policy = userPreferences[UserPreferences.opus_codec_policy],
 	downMixAudio = userPreferences[UserPreferences.audioBehaviour] == AudioBehavior.DOWNMIX_TO_STEREO,
 	assDirectPlay = false,
 	pgsDirectPlay = userPreferences[UserPreferences.pgsDirectPlay],
@@ -390,31 +398,51 @@ fun createDeviceProfile(
 	is_disable_pcm_s24le: Boolean,
 	is_disable_truehd: Boolean,
 	is_disable_vorbis: Boolean,
+	aac_codec_policy: AudioCodecPolicy = AudioCodecPolicy.AUTO,
+	truehd_codec_policy: AudioCodecPolicy = AudioCodecPolicy.AUTO,
+	dts_codec_policy: AudioCodecPolicy = AudioCodecPolicy.AUTO,
+	dca_codec_policy: AudioCodecPolicy = AudioCodecPolicy.AUTO,
+	eac3_codec_policy: AudioCodecPolicy = AudioCodecPolicy.AUTO,
+	flac_codec_policy: AudioCodecPolicy = AudioCodecPolicy.AUTO,
+	opus_codec_policy: AudioCodecPolicy = AudioCodecPolicy.AUTO,
 	downMixAudio: Boolean,
 	assDirectPlay: Boolean,
 	pgsDirectPlay: Boolean,
 ) = buildDeviceProfile {
+	// For each codec with a per-codec policy, determine:
+	//  1. Should the codec be removed from the allowed list entirely (always transcode)?
+	//  2. Should a channel-count condition be added (transcode only when multichannel)?
+	//
+	// The legacy is_disable_* flags take precedence: if the codec is already
+	// disabled, the per-codec policy is ignored for list inclusion but still
+	// respected for the channel restriction only when the legacy flag is NOT set.
+
 	val allowedAudioCodecs = if (downMixAudio) downmixSupportedAudioCodecs else {
 		createSupportedAudioCodecs(
 		isAC3Enabled,
-		isEAC3Enabled,
+		// EAC3 is controlled by isEAC3Enabled (an "enabled" flag) rather than an is_disable_*
+		// flag like the other codecs. Honour the ALWAYS_TRANSCODE policy on top of that toggle.
+		isEAC3Enabled && eac3_codec_policy != AudioCodecPolicy.ALWAYS_TRANSCODE,
 		PreferredAudioTranscodeCodec,
-		is_disable_aac,
+		// Each codec is removed from the allowed list when:
+		//   the legacy disable flag is set, OR the policy is ALWAYS_TRANSCODE.
+		// It stays in the list for TRANSCODE_IF_MULTICHANNEL (channel restriction added later).
+		is_disable_aac || aac_codec_policy == AudioCodecPolicy.ALWAYS_TRANSCODE,
 		is_disable_aac_latm,
 		is_disable_alac,
-		is_disable_dca,
-		is_disable_dts,
-		is_disable_flac,
+		is_disable_dca || dca_codec_policy == AudioCodecPolicy.ALWAYS_TRANSCODE,
+		is_disable_dts || dts_codec_policy == AudioCodecPolicy.ALWAYS_TRANSCODE,
+		is_disable_flac || flac_codec_policy == AudioCodecPolicy.ALWAYS_TRANSCODE,
 		is_disable_mlp,
 		is_disable_mp2,
 		is_disable_mp3,
-		is_disable_opus,
+		is_disable_opus || opus_codec_policy == AudioCodecPolicy.ALWAYS_TRANSCODE,
 		is_disable_pcm_alaw,
 		is_disable_pcm_mulaw,
 		is_disable_pcm_s16le,
 		is_disable_pcm_s20le,
 		is_disable_pcm_s24le,
-		is_disable_truehd,
+		is_disable_truehd || truehd_codec_policy == AudioCodecPolicy.ALWAYS_TRANSCODE,
 		is_disable_vorbis
 		)
 	}
@@ -823,6 +851,42 @@ fun createDeviceProfile(
 
 		conditions {
 			ProfileConditionValue.AUDIO_CHANNELS lowerThanOrEquals if (downMixAudio) 2 else 8
+		}
+	}
+
+	// Per-codec multichannel transcode policies.
+	// When a codec policy is TRANSCODE_IF_MULTICHANNEL, we tell the server that we only
+	// support up to 2 channels for that codec. The server will then transcode multichannel
+	// streams (e.g. TrueHD 7.1) while leaving stereo streams to direct play.
+	if (!downMixAudio) {
+		val multiChannelRestrictedCodecs = buildList {
+			// Only add the channel restriction when the codec is still in the allowed list
+			// (i.e. the legacy disable flag is not set) and the policy requests it.
+			if (aac_codec_policy == AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL && !is_disable_aac)
+				add(Codec.Audio.AAC)
+			if (truehd_codec_policy == AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL && !is_disable_truehd)
+				add(Codec.Audio.TRUEHD)
+			if (dts_codec_policy == AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL && !is_disable_dts)
+				add(Codec.Audio.DTS)
+			if (dca_codec_policy == AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL && !is_disable_dca)
+				add(Codec.Audio.DCA)
+			if (eac3_codec_policy == AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL && isEAC3Enabled)
+				add(Codec.Audio.EAC3)
+			if (flac_codec_policy == AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL && !is_disable_flac)
+				add(Codec.Audio.FLAC)
+			if (opus_codec_policy == AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL && !is_disable_opus)
+				add(Codec.Audio.OPUS)
+		}
+
+		for (audioCodec in multiChannelRestrictedCodecs) {
+			codecProfile {
+				type = CodecType.VIDEO_AUDIO
+				codec = audioCodec
+
+				conditions {
+					ProfileConditionValue.AUDIO_CHANNELS lowerThanOrEquals 2
+				}
+			}
 		}
 	}
 
