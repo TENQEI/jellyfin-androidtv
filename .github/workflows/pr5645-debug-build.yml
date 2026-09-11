@@ -1,0 +1,50 @@
+name: Build PR 5645 Debug APK
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/pr5645-debug-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build PR 5645 debug APK
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout PR 5645 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: BlackstormFirst/jellyfin-androidtv
+          ref: dc6410f796e1acf5ac01bcf56f7e6a0d2d44aa92
+          fetch-depth: 1
+
+      - name: Setup Java
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version-file: .tools-versions
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+
+      - name: Assemble debug APKs
+        run: ./gradlew assembleDebug
+
+      - name: Collect APKs
+        run: |
+          mkdir -p build/pr5645-apk
+          find app/build -type f -iname '*.apk' -exec cp '{}' build/pr5645-apk/ \;
+          ls -lh build/pr5645-apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: jellyfin-androidtv-pr5645-debug
+          retention-days: 14
+          if-no-files-found: error
+          path: build/pr5645-apk/*.apk
