@@ -23,6 +23,19 @@ jobs:
           ref: dc6410f796e1acf5ac01bcf56f7e6a0d2d44aa92
           fetch-depth: 1
 
+      - name: Apply temporary compile fix for PR 5645
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('app/src/main/java/org/jellyfin/androidtv/preference/UserPreferences.kt')
+          text = path.read_text()
+          broken = '''\t\tvar truehdEnabled = booleanPreference("bitstream_truehd", true)\n\t\t * HDR10 device profile override.\n\t\t */'''
+          fixed = '''\t\tvar truehdEnabled = booleanPreference("bitstream_truehd", true)\n\n\t\t/**\n\t\t * HDR10 device profile override.\n\t\t */'''
+          if broken not in text:
+              raise SystemExit('Expected PR 5645 syntax issue not found; upstream may have changed')
+          path.write_text(text.replace(broken, fixed, 1))
+          PY
+
       - name: Setup Java
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
