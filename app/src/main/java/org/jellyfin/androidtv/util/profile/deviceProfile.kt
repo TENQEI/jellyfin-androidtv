@@ -498,7 +498,7 @@ fun createDeviceProfile(
 		protocol = MediaStreamProtocol.HLS
 
 		videoCodec(*hlsVideoCodecs)
-		audioCodec(*hlsMpegTsAudioCodecs.filter(allowedAudioCodecs::contains).toTypedArray())
+		audioCodec(*allowedAudioCodecs.filter { it in hlsMpegTsAudioCodecs }.toTypedArray())
 
 		copyTimestamps = false
 		enableSubtitlesInManifest = true
@@ -512,7 +512,7 @@ fun createDeviceProfile(
 		protocol = MediaStreamProtocol.HLS
 
 		videoCodec(*hlsVideoCodecs)
-		audioCodec(*hlsFmp4AudioCodecs.filter(allowedAudioCodecs::contains).toTypedArray())
+		audioCodec(*allowedAudioCodecs.filter { it in hlsFmp4AudioCodecs }.toTypedArray())
 
 		copyTimestamps = false
 		enableSubtitlesInManifest = true

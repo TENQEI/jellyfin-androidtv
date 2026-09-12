@@ -119,7 +119,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Preferred Audio Codec
 		 */
 
-		var preferred_audio_codec = enumPreference("preferred_audio_codec", PreferredAudioCodecs.AAC)
+		var preferred_audio_codec = enumPreference("preferred_audio_codec", PreferredAudioCodecs.AC3)
 
 		/**
 		 * Enable AC3
@@ -206,12 +206,12 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Policy for AAC audio codec. TRANSCODE_IF_MULTICHANNEL will allow stereo AAC to
 		 * direct play while multichannel AAC (e.g. 5.1) is transcoded by the server.
 		 */
-		var aac_codec_policy = enumPreference("aac_codec_policy", AudioCodecPolicy.AUTO)
+		var aac_codec_policy = enumPreference("aac_codec_policy", AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL)
 
 		/**
 		 * Policy for TrueHD (Dolby TrueHD) audio codec.
 		 */
-		var truehd_codec_policy = enumPreference("truehd_codec_policy", AudioCodecPolicy.AUTO)
+		var truehd_codec_policy = enumPreference("truehd_codec_policy", AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL)
 
 		/**
 		 * Policy for DTS audio codec.
@@ -236,7 +236,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		/**
 		 * Policy for OPUS audio codec.
 		 */
-		var opus_codec_policy = enumPreference("opus_codec_policy", AudioCodecPolicy.AUTO)
+		var opus_codec_policy = enumPreference("opus_codec_policy", AudioCodecPolicy.TRANSCODE_IF_MULTICHANNEL)
 
 		/* Live TV */
 		/**
